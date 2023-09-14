@@ -1,17 +1,31 @@
+import React from "react";
 import PhoneInput from "react-phone-input-2";
-import 'react-phone-input-2/lib/style.css';
+import 'react-phone-input-2/lib/material.css';
+import { twMerge } from "tailwind-merge";
 
-const countries = ["gh","ke","us"]
-export default function TelephoneInput(){
+const countries = ["gh","ke"]
+interface TelephoneInputProps extends React.InputHTMLAttributes<HTMLInputElement>{
+    onchange:(value:string) => void,
+    currency:string,
+}
+export default function TelephoneInput({className,onchange,currency}:TelephoneInputProps){
+    let countrycode;
+    if(currency === "GHS"){
+        countrycode = "gh"
+    }else{
+        countrycode = "ke"
+    }
     return(
         <>
             <PhoneInput
                 inputProps={{name:"phonenumber"}}
-                inputClass="!w-full text-slate-600 !py-[10px]" 
+                inputStyle={{paddingBlock:8}}
+                inputClass={twMerge("!w-full text-slate-600",className)} 
                 containerClass="w-full" 
                 dropdownClass="text-slate-600" 
                 onlyCountries={countries} value={""}  
-                country={countries[0]}
+                country={countrycode}
+                onChange={onchange}
             />
         </>
     )

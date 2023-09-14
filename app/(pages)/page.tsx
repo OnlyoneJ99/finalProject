@@ -1,13 +1,13 @@
 import Button from "../components/button/button";
-import NavBar from '../components/navbar/navbar';
 import TransferWidget from "../components/exchangeratewidget/exchangeratewidget";
-import { fetchExchangeRate } from "../utils/fetch";
+import {fetchExchangeRate} from "../utils/fetch";
 import Link from "next/link";
 
 const currencies = {
-  basecurrency: "USD",
-  secondarycurrency: "EUR",
+  basecurrency: "GHS",
+  secondarycurrency: "KES",
 }
+
 
 export default async function Home() {
   const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);

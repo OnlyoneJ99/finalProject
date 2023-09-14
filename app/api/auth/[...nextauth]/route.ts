@@ -50,11 +50,9 @@ const handler = NextAuth({
             },
         })
     ],
-    pages:{
-      signIn:"/login"  
-    },
+   
     session:{
-        maxAge:2 * 24 * 60 * 60
+        maxAge: 2*24*60*60
     },
     callbacks:{
         async jwt({token,user}){

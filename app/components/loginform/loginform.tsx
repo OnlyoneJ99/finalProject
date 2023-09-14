@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import FormHeader from "../formheader/formheader";
+import ErrorDisplay from "../error/errordisplay";
 
 const LoginForm = ()=>{
     const router = useRouter();
@@ -46,7 +47,7 @@ const LoginForm = ()=>{
             <Form className="w-[80%]" onsubmit={handleSubmit} >
                 <TextInput isSignup={false} label="username" type="text" />
                 <TextInput isSignup={false} label="password" type="password" />
-                {error && <div className="w-full py-2 rounded-[5px] text-[14px] text-slate-600 bg-red-300/30 border border-red-400 text-center ">{error}</div>}
+                {error !== "" && <ErrorDisplay message={error} />}
                 <Button type="submit" onSubmit={handleSubmit} className={`flex justify-center items-center bg-blue-600/80 w-full p-2 rounded-[4px] ${loading && ` cursor-not-allowed `}`}>
                     {loading ? 
                         <>

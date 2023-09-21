@@ -31,24 +31,24 @@ const LoginForm = ()=>{
                 redirect:false,
             });
             if(response && !response.error){
+                console.log("Success")
                 router.push("/dashboard",{scroll:false});
             }else{
+                setLoading(false);
                 setError("Invalid credentials");
             }
         }catch(err){
             console.log(err)
-        }finally{
-            setLoading(false)
         }
     }
     return (
         <>
             <FormHeader title="Login into your account" />
             <Form className="w-[80%]" onsubmit={handleSubmit} >
-                <TextInput isSignup={false} label="username" type="text" />
+                <TextInput isSignup={false}  label="username" type="text" />
                 <TextInput isSignup={false} label="password" type="password" />
                 {error !== "" && <ErrorDisplay message={error} />}
-                <Button type="submit" onSubmit={handleSubmit} className={`flex justify-center items-center bg-blue-600/80 w-full p-2 rounded-[4px] ${loading && ` cursor-not-allowed `}`}>
+                <Button type="submit" disabled={loading} onSubmit={handleSubmit} className={`flex justify-center items-center bg-blue-600/80 w-full p-2 rounded-[4px] ${loading && ` cursor-not-allowed `}`}>
                     {loading ? 
                         <>
                             <RotatingLines strokeColor="white" 

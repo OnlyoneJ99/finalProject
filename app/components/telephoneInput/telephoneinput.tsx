@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 
 const countries = ["gh","ke"]
 interface TelephoneInputProps extends React.InputHTMLAttributes<HTMLInputElement>{
-    onchange:(value:string) => void,
+    onchange?:(value:string) => void,
     currency:string,
 }
 export default function TelephoneInput({className,onchange,currency}:TelephoneInputProps){
@@ -18,6 +18,7 @@ export default function TelephoneInput({className,onchange,currency}:TelephoneIn
     return(
         <>
             <PhoneInput
+                
                 inputProps={{name:"phonenumber"}}
                 inputStyle={{paddingBlock:8}}
                 inputClass={twMerge("!w-full text-slate-600",className)} 

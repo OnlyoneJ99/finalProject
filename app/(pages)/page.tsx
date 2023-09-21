@@ -10,11 +10,12 @@ const currencies = {
 
 
 export default async function Home() {
-  const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);
+  // const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);
+  const exchangerate = 10;
   return (
     <div className="h-full flex flex-col ">
       <main className="w-full h-full text-gray-600 bg-cover bg-center relative bg-slate-100">
-        <div className="h-full w-[80%] mt-20 md:mt-0 mx-auto flex justify-center items-center gap-8 flex-col md:flex-row md:justify-center">
+        <div className="h-full w-[80%] mt-20 md:mt-0 mx-auto flex justify-center items-center relative gap-8 flex-col md:flex-row md:justify-center">
           <div className="flex flex-col gap-y-3 justify-center grow">
             <h1 className="text-slate-500 font-extrabold text-2xl md:text-3xl lg:text-4xl">SEND MONEY ANYWHERE</h1>
             <p className="w-[25ch] font-[16px]">Quickly and easily send, receive and request money online with <span className="font-bold text-slate-500">JeffPay</span></p>

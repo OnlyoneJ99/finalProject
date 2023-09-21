@@ -12,11 +12,26 @@ datasource db {
 
 model Users{
   id String @id @default(cuid())
-  username String 
+  username String @unique
   firstname String
   lastname String
   password String 
-  phonenumber String 
-  @@unique([username,phonenumber])
+  phonenumber String @unique
+  balance Float
 }
 
+model Transfers{
+  id String @id @default(cuid())
+  date String
+  amount String
+  status String
+  recipient_name String
+}
+
+model Receptions{
+  id String @id @default(cuid())
+  date String
+  amount String
+  status String
+  recipient_name String
+}

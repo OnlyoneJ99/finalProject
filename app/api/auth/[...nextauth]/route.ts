@@ -7,8 +7,9 @@ import { prisma } from '@/app/lib/prisma';
 
 const clientId = process.env.GOOGLE_CLIENT_ID as string;
 const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
-
+console.log(process.env.AUTH_SECRET)
 const handler = NextAuth({
+    secret:process.env.AUTH_SECRET,
     providers:[
         FaceBookProvider({
             clientId:process.env.FACEBOOK_CLIENT_ID as string,

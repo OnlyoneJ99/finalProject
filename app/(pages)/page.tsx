@@ -4,14 +4,13 @@ import {fetchExchangeRate} from "../utils/fetch";
 import Link from "next/link";
 
 const currencies = {
-  basecurrency: "GHS",
-  secondarycurrency: "KES",
+  basecurrency: "USD",
+  secondarycurrency: "GHS",
 }
 
-
 export default async function Home() {
-  // const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);
-  const exchangerate = 10;
+  console.log(currencies.secondarycurrency)
+  const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);
   return (
     <div className="h-full flex flex-col ">
       <main className="w-full h-full text-gray-600 bg-cover bg-center relative bg-slate-100">

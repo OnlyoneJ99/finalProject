@@ -18,7 +18,9 @@ export async function POST(request:Request){
             password:hashedpassword,
             phonenumber,
             firstname,
-            lastname
+            lastname,
+            balance:0.0,
+            country
         }
     });
     console.log(user)

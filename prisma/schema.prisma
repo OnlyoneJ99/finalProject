@@ -10,28 +10,35 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
-model Users{
+model User{
   id String @id @default(cuid())
   username String @unique
   firstname String
   lastname String
   password String 
+  country String
   phonenumber String @unique
   balance Float
+  transfers Transfer[]
+  receptions Reception[]
 }
 
-model Transfers{
+model Transfer{
   id String @id @default(cuid())
   date String
-  amount String
+  amount Float
   status String
   recipient_name String
+  senderId String
+  user User @relation(fields: [senderId],references: [id])  
 }
 
-model Receptions{
+model Reception{
   id String @id @default(cuid())
   date String
-  amount String
+  amount Float
   status String
-  recipient_name String
+  sender_name String
+  recipientId String
+  user User @relation(fields: [recipientId],references: [id])  
 }

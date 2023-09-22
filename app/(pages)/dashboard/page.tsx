@@ -4,13 +4,19 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-
-interface TransferData{
-    transferID: string,
-    customername:string,
+interface GeneralData{
     date:string,
     amount:number,
-    status:string
+    status:string,
+    id:string
+}
+interface TransferData extends GeneralData{
+    recipient_name:string,
+    senderId:string
+}
+interface ReceptionData extends GeneralData{
+    sender_name:string,
+    recipientId:string
 }
 
 const transfersbycountries = [
@@ -24,25 +30,56 @@ const transfersbycountries = [
     }
 ];
 
+interface CurrentUser{
+    username:string,
+    id:string,
+    firstname:string,
+    lastname:string
+  };
+
 const DashBoard = ()=>{
     const[transferdata,setTransferData] = useState<TransferData[]>([]);
-    useSession({required: true,
+    const [receptiondata,setReceptionData] = useState<ReceptionData[]>([]);
+    const [totalamount,setTotalAmount] = useState({sent:0,received:0});
+    const [balance,setBalance] = useState(0);
+
+    const {data,status} = useSession({required: true,
         onUnauthenticated(){
             redirect("/login");
         }
     });
-    
+    const currentuser = data?.user as CurrentUser;
+
     useEffect(()=>{
         async function fetchTransfers()
         {
-            let response = await fetch("/recenttransfers");
-            const data = await response.json();
+            let response = await fetch("/api/userdata",
+            );
+            let {totalamountreceived_,totalamountsent_,balance,transfers,receptions} = await response.json();
+            console.log("data: ",totalamountreceived_,totalamountsent_,balance,transfers,receptions);
+            let recentreceptionsdata = receptions as ReceptionData[];
+            let recenttransfersdata  = transfers as TransferData[]; 
+            setReceptionData(recentreceptionsdata);
+            setTransferData(recenttransfersdata);
+            setBalance(balance);
+            setTotalAmount({sent:totalamountsent_,received:totalamountreceived_});
         }
-        fetchTransfers();
-    },[]);
+        if(status === "authenticated")
+            fetchTransfers();
+    },[status]);
     return(
         <>
-            <DashBoardData transferdata={transferdata} transfersbycountries={transfersbycountries} />
+            <DashBoardData
+             transferdata={transferdata}
+             receptiondata={receptiondata}
+             totalamountreceived={totalamount.received}
+             totalamountsent={totalamount.sent}
+             transfersbycountries={transfersbycountries}
+             balance={balance}
+             numberofreceptions={receptiondata.length}
+             numberoftransfers={transferdata.length}
+             userId={currentuser.id}
+            />
         </>
     )
 }

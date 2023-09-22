@@ -1,11 +1,12 @@
-const CURRENCY_API_KEY="0cef3af4ff-f49b766f73-rzxcbp";
 
 export async function fetchExchangeRate(basecurrency:string,secondarycurrency:string){
   console.log(basecurrency,secondarycurrency)
     try{
-      const url = `https://exchange-rates.abstractapi.com/v1/live/?api_key=d8a9fe4bef834a97be53b5733d6fd088&base=${basecurrency}&target=${secondarycurrency}`;
+      console.log(process.env.NEXT_PUBLIC_CURRENCY_API_KEY);
+      const url = `https://api.fastforex.io/fetch-one?api_key=${process.env.NEXT_PUBLIC_CURRENCY_API_KEY}&from=${basecurrency}&to=${secondarycurrency}`;
       const response = await fetch(url);
       const data = await response.json();
+      console.log("response:",data)
       const exchangeRate = parseFloat(data.result[secondarycurrency]);
       return exchangeRate;
     }catch(error){

@@ -36,7 +36,7 @@ const handler = NextAuth({
                 if(!credentials?.username || !credentials.password){
                     return null;
                 }
-                const user = await prisma.users.findUnique({
+                const user = await prisma.user.findUnique({
                    where:{username:credentials.username}
                 });
                 if(!user || !(await compare(credentials.password,user.password))){
@@ -46,6 +46,8 @@ const handler = NextAuth({
                     id:user.id,
                     username:user.username,
                     phonenumber:user.phonenumber,
+                    firstname:user.firstname,
+                    lastname:user.lastname,
                 }
                 return usersessiondata as User;
             },

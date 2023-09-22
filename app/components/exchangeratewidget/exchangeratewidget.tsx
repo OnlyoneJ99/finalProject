@@ -1,5 +1,5 @@
 'use client'
-import {useRef, useState } from "react";
+import {useState } from "react";
 import ExchangeRateDisplay from "../exchangeratedisplay/exhangeratedisplay";
 import CurrencyInput from "../currencyinput/currencyinput";
 import Button from "../button/button";
@@ -8,38 +8,33 @@ import TelephoneInput from "../telephoneInput/telephoneinput";
 import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import ErrorDisplay from "../error/errordisplay";
-import { PAYSTACK_ORIGIN, TELCOS_URL } from "../../config/config";
-import TextInput from "../textinput/textinput";
-
-
-async function fetchTelcos(currency:string){
-  const url = new URL(TELCOS_URL,PAYSTACK_ORIGIN);
-  url.searchParams.append("currency",currency);
-  url.searchParams.append("type","mobile_money");
-  try{
-    const response = await fetch(url.href);
-    const telcos = await response.json();
-    return telcos;
-  }catch(error){
-    console.log(error);
-  }
-}
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { RotatingLines } from "react-loader-spinner";
 
 const INIT_VALUE = 100;
 enum transfermethods {MOBILE_MONEY="mobile_money",BANK_TRANSFER="bank_transfer"};
 
-const currency_codes = ["GHS","KES",];
+interface CurrentUser{
+  username:string,
+  id:string,
+  firstname:string
+  ,lastname:string
+};
+const currency_codes = ["USD","GHS",];
 
 export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:number}){
-    const[currencies,setCurrencies] = useState({from:"GHS",to:"KES"});
+    const[currencies,setCurrencies] = useState({from:"USD",to:"GHS"});
     const[transfermethod,setTransferMethod] = useState(transfermethods.BANK_TRANSFER)
     const[loading,setLoading] = useState(false);
+    const [transferloading,setTransferloading] = useState(false);
     const[exchangerate,setExchangeRate] = useState(initexchangerate);
     const[convertedAmount,setConvertedAmount] = useState({from:INIT_VALUE,to:initexchangerate * INIT_VALUE});
     const[recipientphonenumber,setRecipientPhoneNumber] = useState("");
     const[errorMessage,setErrorMessage] = useState("");
-    const{status} = useSession();
+    const{data,status} = useSession();
     const router = useRouter();
+    const currentuser = data?.user as CurrentUser;
 
     async function selectBaseCurrencyAndFetchExchangeRate(e:React.ChangeEvent<HTMLSelectElement>){
       const selectedcurrency = e.target.value;
@@ -56,8 +51,7 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
       const selectedcurrency = e.target.value;
       setCurrencies({...currencies,to:selectedcurrency});
       setLoading(true);
-      const response = await Promise.allSettled([fetchTelcos(selectedcurrency),fetchExchangeRate(currencies.from,selectedcurrency)]);
-      const exchangerate = 32;
+      const exchangerate = await fetchExchangeRate(currencies.from,selectedcurrency);
       setLoading(false);
       setExchangeRate(exchangerate);
       const convertedamount = parseFloat((convertedAmount.to / exchangerate).toFixed(4));
@@ -94,7 +88,59 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
     async function completeMoneyTransfer(){
       if(recipientphonenumber !== "" && errorMessage === ""){
         if(status === "authenticated"){
-            await fetch("/transferdetails",{method:"POST"});
+            setTransferloading(true)
+            try{
+              const response = await fetch("/api/verifyuser",{method:"POST",body:JSON.stringify({recipientphonenumber})});
+              const {userexists} = await response.json();
+              if(userexists){
+                const response = await fetch("/api/checkamount",{method:"POST",body:JSON.stringify({username:currentuser.username})});
+                let {balance,country} = await response.json();
+                if(country === "Ghana" && currencies.to === "USD"){
+                    balance = balance / exchangerate; 
+                }else if(country === "USA" && currencies.to === "GHS"){
+                    balance = balance * exchangerate;
+                }
+                const remainingBalance = balance - convertedAmount.to;
+                console.log(remainingBalance)
+                const transfervalid = (remainingBalance > 0.0)
+                if(transfervalid){
+                  const response = await fetch("/api/deductamount",{method:"POST",body:JSON.stringify({username:currentuser.username,amount:remainingBalance})});
+                  const {status} = await response.json();
+                  if(status === "success"){
+                    const response = await fetch("/api/transfermoney",{method:"POST",body:JSON.stringify({recipientphonenumber,amount:convertedAmount.to})});
+                    const {recipient,status} = await response.json();
+
+                    if(status === "success"){                  
+                      const transferdetails = {
+                        recipient_name:`${recipient.firstname} ${recipient.lastname}`,
+                        amount:convertedAmount.to,
+                        status:"success",
+                        date:new Date().toLocaleDateString(),
+                        senderId:currentuser.id,
+                        recipientId:recipient.id,
+                        sender_name:`${currentuser.firstname} ${currentuser.lastname}`,
+                      }
+                      console.log("transferdetails:",transferdetails)
+                      const response = await fetch("/api/receipt",{method:"POST",body:JSON.stringify({transferdetails})});
+                      const {status,created} = await response.json();
+                      if(status === "success" && created){
+                        toast.success("Transfer completed successfully",{position:"bottom-right"});
+                      } 
+                      
+                    }
+                  }
+                  return;
+                }
+                setErrorMessage("You have insufficient funds");
+              }else{
+                toast.error("User does not exist",{position:"bottom-right"});
+              }
+            }catch(error){
+              console.log(error);
+            }finally{
+              setTransferloading(false);
+            }
+            
         }else if(status === "unauthenticated"){
             router.push("/login")
         }
@@ -109,7 +155,6 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
       }
       setRecipientPhoneNumber(receipientphonenumber);
     }
-    
     return (
         <div className="
          bg-white text-gray-600 md:min-w-[24.5rem]
@@ -158,7 +203,22 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
               {errorMessage !== "" && <ErrorDisplay message={errorMessage} />}
             </>
           }
-          <Button onClick={completeMoneyTransfer} className="w-full py-3 text-white mt-8 bg-blue-800/70 rounded-[5px]">Get Started</Button>
+          <ToastContainer />
+          <Button disabled={transferloading} onClick={completeMoneyTransfer} className={`flex justify-center items-center w-full py-3 text-white mt-8 bg-blue-800/70 rounded-[5px] ${transferloading &&` cursor-not-allowed `}`}>
+          {
+            transferloading ? 
+              <>
+                  <RotatingLines strokeColor="white" 
+                      strokeWidth="4"
+                      animationDuration="0.8"
+                      width="25"
+                      visible={true}
+                  /> 
+                  <span className="ml-2">Transferring...</span>
+              </>:
+              "Get Started"
+            }
+          </Button>
          </div>    
     )
 }

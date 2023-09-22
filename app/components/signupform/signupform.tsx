@@ -7,11 +7,10 @@ import Form from "@/app/components/form/form";
 import {registerUser} from "@/app/actions/register";
 import FormHeader from "../formheader/formheader";
 import TelephoneInput from "../telephoneInput/telephoneinput";
-import { ToastContainer, Zoom, toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useState } from "react";
-const passwordpattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$";
+
+const passwordpattern = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$/";
 export default function SignupForm(){
 
     function checkFormFields(data:FormData){
@@ -20,7 +19,8 @@ export default function SignupForm(){
         const phonenumber = data.get("phonenumber") as string;
         const firstname = data.get("firstname") as string;
         const lastname = data.get("lastname") as string;
-        return (username !== "" && firstname !== "" && lastname !== "" && password !== "" && phonenumber !== "")
+        const country = data.get("country") as string
+        return (username !== "" && firstname !== "" && lastname !== "" &&country !== "" && password !== "" && phonenumber !== "")
     }
 
     async function submitForm(data:FormData){
@@ -29,7 +29,7 @@ export default function SignupForm(){
             if(response.registered){
                 toast.success(response?.message as string);
             }else{
-                toast.error(response?.message as string)
+                toast.error(response?.message as string);
             }
             return;
         }
@@ -43,6 +43,18 @@ export default function SignupForm(){
                 <TextInput required={true} isSignup={true} label="username" type="text" />
                 <TextInput passwordpattern={passwordpattern} required={true} isSignup={true} label="password" type="password" />
                 <TelephoneInput currency="GHS"  />
+                <div  className="w-full flex flex-col text-[14px] text-slate-600">
+                    <label htmlFor="country" className="after:content-['*'] after:text-red-600 after:ml-[2px]">country</label>
+                    <select id="country" name="country" className="cursor-pointer py-3 px-4
+                        rounded-[5px]
+                        border border-gray-300 
+                      focus-visible:outline-blue-500 
+                        focus-visible:outline-2"
+                    >
+                        <option selected value="USA">USA</option>
+                        <option value="Ghana">Ghana</option>
+                    </select>
+                </div>
                 <TextInput required={true} isSignup={true} label="first name" type="text" />
                 <TextInput required={true} isSignup={true} label="last name" type="text"/>
                 <Button type="submit" className="bg-blue-600/80 w-full text-white p-2 rounded-[4px]" >Sign Up</Button>

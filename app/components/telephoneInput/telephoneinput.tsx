@@ -20,8 +20,8 @@ export default function TelephoneInput({className,onchange,currency}:TelephoneIn
             <PhoneInput
                 inputProps={{name:"phonenumber"}}
                 inputStyle={{paddingBlock:8}}
-                inputClass={twMerge("!w-full text-slate-600",className)} 
-                containerClass="w-full" 
+                inputClass={twMerge("!w-full",className)} 
+                containerClass="w-full text-slate-600" 
                 dropdownClass="text-slate-600" 
                 onlyCountries={countries} value={""}  
                 country={countrycode}

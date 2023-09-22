@@ -42,17 +42,17 @@ export default function SignupForm(){
             <Form name="register" action={submitForm} className="w-[80%] mt-8 mb-3">
                 <TextInput required={true} isSignup={true} label="username" type="text" />
                 <TextInput passwordpattern={passwordpattern} required={true} isSignup={true} label="password" type="password" />
-                <TelephoneInput currency="GHS"  />
-                <div  className="w-full flex flex-col text-[14px] text-slate-600">
+                <TelephoneInput currency="GHS" />
+                <div className="w-full flex flex-col text-[14px] text-slate-600">
                     <label htmlFor="country" className="after:content-['*'] after:text-red-600 after:ml-[2px]">country</label>
-                    <select id="country" name="country" className="cursor-pointer py-3 px-4
+                    <select defaultValue={"Ghana"} id="country" name="country" className="cursor-pointer py-3 px-4
                         rounded-[5px]
                         border border-gray-300 
                       focus-visible:outline-blue-500 
                         focus-visible:outline-2"
                     >
-                        <option selected value="USA">USA</option>
-                        <option value="Ghana">Ghana</option>
+                        <option value="USA">USA</option>
+                        <option defaultValue="GHANA" value="Ghana">Ghana</option>
                     </select>
                 </div>
                 <TextInput required={true} isSignup={true} label="first name" type="text" />

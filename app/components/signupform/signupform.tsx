@@ -58,22 +58,22 @@ export default function SignupForm(){
                 <TextInput required={true} isSignup={true} label="first name" type="text" />
                 <TextInput required={true} isSignup={true} label="last name" type="text"/>
                 <Button type="submit" className="bg-blue-600/80 w-full text-white p-2 rounded-[4px]" >Sign Up</Button>
-                <div className="flex items-center w-full
+                {/* <div className="flex items-center w-full
                     before:content-[''] after:content-['']
                     before:block after:block
                     before:w-full after:w-full
                     before:h-[1px] before:bg-slate-300
                     after:h-[1px] after:bg-slate-300
                     text-slate-500 before:mr-2 after:ml-2"
-                >OR</div>
-                <Button authbutton className="w-full flex items-center justify-center">
+                >OR</div> */}
+                {/* <Button authbutton className="w-full flex items-center justify-center">
                     <span className=""><FcGoogle size={24}/></span>
                     <span className="text-[14px] ml-4">Continue with Google</span>
                 </Button>
                 <Button authbutton className="w-full flex items-center justify-center">
                     <span className=""><FaFacebookSquare size={24}/></span>
                     <span className="text-[14px] ml-4">Continue with Facebook</span>
-                </Button>
+                </Button> */}
             </Form>
         </>
     )

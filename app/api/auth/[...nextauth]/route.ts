@@ -1,24 +1,11 @@
 import {compare} from "bcrypt";
 import NextAuth, { User } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import FaceBookProvider from "next-auth/providers/facebook";
 import { prisma } from '@/app/lib/prisma';
-
-const clientId = process.env.GOOGLE_CLIENT_ID as string;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
 
 const handler = NextAuth({
     secret:process.env.AUTH_SECRET,
     providers:[
-        FaceBookProvider({
-            clientId:process.env.FACEBOOK_CLIENT_ID as string,
-            clientSecret:process.env.FACEBOOK_CLIENT_SECRET as string
-        }),
-        GoogleProvider({
-            clientId,
-            clientSecret,                       
-        }),
         CredentialsProvider({
             name:"sign in",
             credentials:{

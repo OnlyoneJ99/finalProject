@@ -44,7 +44,7 @@ const LoginForm = ()=>{
     return (
         <>
             <FormHeader title="Login into your account" />
-            <Form className="w-[80%]" onsubmit={handleSubmit} >
+            <Form className="w-[80%] shadow-lg shadow-slate-300/20" onsubmit={handleSubmit} >
                 <TextInput isSignup={false}  label="username" type="text" />
                 <TextInput isSignup={false} label="password" type="password" />
                 {error !== "" && <ErrorDisplay message={error} />}

@@ -62,7 +62,7 @@ const LoginForm = ()=>{
                         "Login"
                     } 
                 </Button>                
-                <Link href="/signup"><div className="text-slate-500 text-[14px]"><span>{`Don't have an account?`}</span><span className="text-blue-600">Sign Up</span></div></Link>
+                <Link href="/signup"><div className="text-slate-500 text-[14px]"><span>{`Don't have an account? `}</span><span className="text-blue-600">Sign Up</span></div></Link>
             </Form>
         </>
     )

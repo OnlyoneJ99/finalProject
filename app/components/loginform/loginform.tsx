@@ -61,16 +61,7 @@ const LoginForm = ()=>{
                         </>:
                         "Login"
                     } 
-                </Button>
-                <div className="
-                    flex items-center w-full
-                    before:content-[''] after:content-['']
-                    before:block after:block
-                    before:w-full after:w-full
-                    before:h-[1px] before:bg-slate-300
-                    after:h-[1px] after:bg-slate-300
-                    text-slate-500 before:mr-2 after:ml-2"
-                >OR</div>
+                </Button>                
                 <Link href="/signup"><div className="text-slate-600 text-[14px]"><span>{`Don&apos;t have an account?`}</span><span className="text-blue-600">Sign Up</span></div></Link>
             </Form>
         </>

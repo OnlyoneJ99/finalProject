@@ -71,7 +71,7 @@ const LoginForm = ()=>{
                     after:h-[1px] after:bg-slate-300
                     text-slate-500 before:mr-2 after:ml-2"
                 >OR</div>
-                <Link href="/signup"><div className="text-slate-600 text-[14px]">Don't have an account?<span className="text-blue-600">Sign Up</span></div></Link>
+                <Link href="/signup"><div className="text-slate-600 text-[14px]"><span>{`Don&apos;t have an account?`}</span><span className="text-blue-600">Sign Up</span></div></Link>
                 <Button type="button" onClick={()=>signIn("google")} authbutton  className="w-full flex items-center justify-center">
                     <span className=""><FcGoogle size={24}/></span>
                     <span className="text-[14px] ml-4">Continue with Google</span>

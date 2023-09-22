@@ -44,7 +44,7 @@ const LoginForm = ()=>{
     return (
         <>
             <FormHeader title="Login into your account" />
-            <Form className="w-[80%] h-fit shadow-lg shadow-slate-300/20" onsubmit={handleSubmit} >
+            <Form className="w-[80%] px-10 h-fit sm:shadow-md sm:py-10 rounded-md sm:shadow-slate-500/20" onsubmit={handleSubmit} >
                 <TextInput isSignup={false}  label="username" type="text" />
                 <TextInput isSignup={false} label="password" type="password" />
                 {error !== "" && <ErrorDisplay message={error} />}
@@ -62,7 +62,7 @@ const LoginForm = ()=>{
                         "Login"
                     } 
                 </Button>                
-                <Link href="/signup"><div className="text-slate-500 text-[14px]"><span>{`Don't have an account? `}</span><span className="text-blue-600">Sign Up</span></div></Link>
+                <Link href="/signup"><div className=" text-slate-500 text-[14px]"><span>{`Don't have an account? `}</span><span className="text-blue-600">Sign Up</span></div></Link>
             </Form>
         </>
     )

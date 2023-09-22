@@ -34,6 +34,7 @@ interface DashBoardDataProps{
     numberofreceptions:number,
     numberoftransfers:number,
     country:string
+    setBalance:React.Dispatch<React.SetStateAction<number>>
 }
 interface CurrentUser{
     username:string,
@@ -41,13 +42,13 @@ interface CurrentUser{
     firstname:string,
     lastname:string
   };
-export default function DashBoardData({totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,balance,country}:DashBoardDataProps){
+export default function DashBoardData({totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,setBalance,balance,country}:DashBoardDataProps){
     const [visible,setVisible] = useState(false);
-    const [totalbalance,setTotalBalance] = useState(()=>balance);
     const topupvalue = useRef(0);
     const topupinputoverlay = useRef(null);
     const {data} = useSession();
     const currentuser = data?.user as CurrentUser;
+    console.log(balance);
 
     function showTopupInput(){
         setVisible(true);
@@ -64,7 +65,7 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
         const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId:currentuser.id})});
         const data = await response.json();
         if(data.status === "success" && data.toppedup){
-            setTotalBalance(data.balance);
+            setBalance(data.balance);
         }   
     }
     return(
@@ -97,7 +98,7 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                                 <div className="w-[95%] mx-auto h-full flex flex-col justify-between">
                                     <div className="flex justify-between items-center py-6">
                                         <h3 className="text-[14px]">Total balance</h3>
-                                        <h3>{totalbalance}{(country.toLowerCase()) === "ghana"?"GHS":"USD"}</h3>
+                                        <h3>{balance}{(country.toLowerCase()) === "ghana"?"GHS":"USD"}</h3>
                                     </div>
                                     <div className="flex gap-x-3 mb-2">
                                         <CiCreditCard2 className="border rounded-sm border-white " size={40} />

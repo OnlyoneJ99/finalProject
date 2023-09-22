@@ -62,7 +62,6 @@ const DashBoard = ()=>{
             setBalance(balance);
             setTotalAmount({sent:totalamountsent_,received:totalamountreceived_});
             setCountry(country);
-            console.log(country)
         }
         if(status === "authenticated")
             fetchTransfers();
@@ -79,6 +78,7 @@ const DashBoard = ()=>{
              numberofreceptions={receptiondata.length}
              numberoftransfers={transferdata.length}
              country={country}
+             setBalance={setBalance}
             />
         </>
     )

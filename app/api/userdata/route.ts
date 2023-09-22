@@ -40,6 +40,14 @@ export async function POST(req:Request){
                 status:true,
             }
         });
+        const country = await prisma.user.findUnique({
+            where:{
+                id:userid,
+            },
+            select:{
+                country:true,
+            }
+        })
         const receptionsPromise = await prisma.reception.findMany({
             where:{
                 recipientId:userid
@@ -60,6 +68,6 @@ export async function POST(req:Request){
             return prev + currentvalue.amount;
         },0)
         console.log(totalamountreceived_,totalamountsent_)
-        return NextResponse.json({totalamountreceived_,totalamountsent_,...balance,transfers,receptions});
+        return NextResponse.json({totalamountreceived_,totalamountsent_,...balance,transfers,receptions,...country});
     }catch(error){console.log(error);}
 }

@@ -36,12 +36,13 @@ interface CurrentUser{
     firstname:string,
     lastname:string
   };
-
+type Country = "Ghana" | "USA";
 const DashBoard = ()=>{
-    const[transferdata,setTransferData] = useState<TransferData[]>([]);
+    const [transferdata,setTransferData] = useState<TransferData[]>([]);
     const [receptiondata,setReceptionData] = useState<ReceptionData[]>([]);
     const [totalamount,setTotalAmount] = useState({sent:0,received:0});
     const [balance,setBalance] = useState(0);
+    const [country,setCountry] = useState<Country>("Ghana")
 
     const {data,status} = useSession({required: true,
         onUnauthenticated(){
@@ -49,19 +50,19 @@ const DashBoard = ()=>{
         }
     });
     const currentuser = data?.user as CurrentUser;
-    console.log("main page")
     useEffect(()=>{
         async function fetchTransfers()
         {
             let response = await fetch("/api/userdata",{method:"POST",body:JSON.stringify({userid:currentuser.id})});
-            let {totalamountreceived_,totalamountsent_,balance,transfers,receptions} = await response.json();
-            console.log("data: ",totalamountreceived_,totalamountsent_,balance,transfers,receptions);
+            let {totalamountreceived_,totalamountsent_,balance,transfers,receptions,country} = await response.json();
             let recentreceptionsdata = receptions as ReceptionData[];
             let recenttransfersdata  = transfers as TransferData[]; 
             setReceptionData(recentreceptionsdata);
             setTransferData(recenttransfersdata);
             setBalance(balance);
             setTotalAmount({sent:totalamountsent_,received:totalamountreceived_});
+            setCountry(country);
+            console.log(country)
         }
         if(status === "authenticated")
             fetchTransfers();
@@ -77,6 +78,7 @@ const DashBoard = ()=>{
              balance={balance}
              numberofreceptions={receptiondata.length}
              numberoftransfers={transferdata.length}
+             country={country}
             />
         </>
     )

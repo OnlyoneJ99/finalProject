@@ -101,7 +101,6 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
                     balance = balance * exchangerate;
                 }
                 const remainingBalance = balance - convertedAmount.to;
-                console.log(remainingBalance)
                 const transfervalid = (remainingBalance > 0.0)
                 if(transfervalid){
                   const response = await fetch("/api/deductamount",{method:"POST",body:JSON.stringify({username:currentuser.username,amount:remainingBalance})});
@@ -109,10 +108,10 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
                   if(status === "success"){
                     const response = await fetch("/api/transfermoney",{method:"POST",body:JSON.stringify({recipientphonenumber,amount:convertedAmount.to})});
                     const {recipient,status} = await response.json();
-
-                    if(status === "success"){                  
+                    if(status === "success"){     
+                      const recipient_name = `${recipient.firstname} ${recipient.lastname}`;            
                       const transferdetails = {
-                        recipient_name:`${recipient.firstname} ${recipient.lastname}`,
+                        recipient_name,
                         amount:convertedAmount.to,
                         status:"success",
                         date:new Date().toLocaleDateString(),
@@ -120,11 +119,10 @@ export default function ExchangeRateWidget({initexchangerate}:{initexchangerate:
                         recipientId:recipient.id,
                         sender_name:`${currentuser.firstname} ${currentuser.lastname}`,
                       }
-                      console.log("transferdetails:",transferdetails)
                       const response = await fetch("/api/receipt",{method:"POST",body:JSON.stringify({transferdetails})});
                       const {status,created} = await response.json();
                       if(status === "success" && created){
-                        toast.success("Transfer completed successfully",{position:"bottom-right"});
+                        toast.success(`Transfer to ${recipient_name} completed successfully`,{position:"bottom-right"});
                       } 
                       
                     }

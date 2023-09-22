@@ -9,7 +9,6 @@ const currencies = {
 }
 
 export default async function Home() {
-  console.log(currencies.secondarycurrency)
   const exchangerate = await fetchExchangeRate(currencies.basecurrency,currencies.secondarycurrency);
   return (
     <div className="h-full flex flex-col ">

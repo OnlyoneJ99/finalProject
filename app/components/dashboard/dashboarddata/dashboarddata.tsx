@@ -32,22 +32,21 @@ interface DashBoardDataProps{
     totalamountreceived:number,
     totalamountsent:number,
     numberofreceptions:number,
-    numberoftransfers:number
+    numberoftransfers:number,
+    country:string
 }
 interface CurrentUser{
     username:string,
     id:string,
-    firstname:string
-    ,lastname:string
+    firstname:string,
+    lastname:string
   };
-export default function DashBoardData({totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,balance}:DashBoardDataProps){
-    console.log(balance)
+export default function DashBoardData({totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,balance,country}:DashBoardDataProps){
     const [visible,setVisible] = useState(false);
     const [totalbalance,setTotalBalance] = useState(()=>balance);
-    console.log(totalbalance)
     const topupvalue = useRef(0);
     const topupinputoverlay = useRef(null);
-    const{data} = useSession();
+    const {data} = useSession();
     const currentuser = data?.user as CurrentUser;
 
     function showTopupInput(){
@@ -61,7 +60,7 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
         const value = parseFloat(e.target.value);
         topupvalue.current = value;
     }
-    async function setBalance(){
+    async function topUpBalance(){
         const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId:currentuser.id})});
         const data = await response.json();
         if(data.status === "success" && data.toppedup){
@@ -98,7 +97,7 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                                 <div className="w-[95%] mx-auto h-full flex flex-col justify-between">
                                     <div className="flex justify-between items-center py-6">
                                         <h3 className="text-[14px]">Total balance</h3>
-                                        <h3>{totalbalance}Ghs</h3>
+                                        <h3>{totalbalance}{(country.toLowerCase()) === "ghana"?"GHS":"USD"}</h3>
                                     </div>
                                     <div className="flex gap-x-3 mb-2">
                                         <CiCreditCard2 className="border rounded-sm border-white " size={40} />
@@ -108,12 +107,12 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                             </div>
                         </CardWrapper>
                         
-                        <MoneyCard label="Total money sent" amount={totalamountsent} />
-                        <MoneyCard label="Total money Received" amount={totalamountreceived} />
+                        <MoneyCard country={country} label="Total money sent" amount={totalamountsent} />
+                        <MoneyCard country={country} label="Total money Received" amount={totalamountreceived} />
                         <div ref={topupinputoverlay} onClick={closeTopupInput} className={`${visible? 'flex':'hidden'} absolute top-0 left-0 h-full w-full justify-center bg-slate-500/80`}>
                             <div className="max-w-[90%] h-fit w-[30rem] mt-20">
                                 <TextInput onChange={getTopupAmount}  className="w-full text-white text-[18px]" isSignup={false} label="" placeholder="Enter amount to top up with" type="number"/>
-                                <Button onClick={(e)=>{setVisible(false) ,setBalance()}} className="bg-blue-500 mt-4 w-full text-center">top up</Button>
+                                <Button onClick={(e)=>{setVisible(false) ,topUpBalance()}} className="bg-blue-500 mt-4 w-full text-center">top up</Button>
                             </div>
                         </div>
                     </div>

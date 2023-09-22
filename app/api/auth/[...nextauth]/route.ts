@@ -17,7 +17,7 @@ const handler = NextAuth({
         }),
         GoogleProvider({
             clientId,
-            clientSecret,            
+            clientSecret,                       
         }),
         CredentialsProvider({
             name:"sign in",

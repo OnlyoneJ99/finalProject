@@ -72,14 +72,6 @@ const LoginForm = ()=>{
                     text-slate-500 before:mr-2 after:ml-2"
                 >OR</div>
                 <Link href="/signup"><div className="text-slate-600 text-[14px]"><span>{`Don&apos;t have an account?`}</span><span className="text-blue-600">Sign Up</span></div></Link>
-                {/* <Button type="button" onClick={()=>signIn("google",{redirect:true,callbackUrl:"/dashboard"})} authbutton  className="w-full flex items-center justify-center">
-                    <span className=""><FcGoogle size={24}/></span>
-                    <span className="text-[14px] ml-4">Continue with Google</span>
-                </Button>
-                <Button type="button" onClick={()=>signIn("facebook",{redirect:true,callbackUrl:"/dashboard"})} authbutton className="w-full flex items-center justify-center">
-                    <span className=""><FaFacebookSquare size={24}/></span>
-                    <span className="text-[14px] ml-4">Continue with Facebook</span>
-                </Button> */}
             </Form>
         </>
     )

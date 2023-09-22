@@ -9,6 +9,7 @@ import MoneyCard from "../moneycard/moneycard";
 import TextInput from "../../textinput/textinput";
 import React, { useRef, useState } from "react";
 import Button from "../../button/button";
+import { useSession } from "next-auth/react";
 
 interface GeneralData{
     date:string,
@@ -32,13 +33,22 @@ interface DashBoardDataProps{
     totalamountsent:number,
     numberofreceptions:number,
     numberoftransfers:number
-    userId:string
 }
-export default function DashBoardData({userId,totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,balance}:DashBoardDataProps){
+interface CurrentUser{
+    username:string,
+    id:string,
+    firstname:string
+    ,lastname:string
+  };
+export default function DashBoardData({totalamountreceived,numberofreceptions,numberoftransfers,totalamountsent,transfersbycountries,receptiondata,transferdata,balance}:DashBoardDataProps){
+    console.log(balance)
     const [visible,setVisible] = useState(false);
-    const [totalbalance,setTotalBalance] = useState(balance);
+    const [totalbalance,setTotalBalance] = useState(()=>balance);
+    console.log(totalbalance)
     const topupvalue = useRef(0);
     const topupinputoverlay = useRef(null);
+    const{data} = useSession();
+    const currentuser = data?.user as CurrentUser;
 
     function showTopupInput(){
         setVisible(true);
@@ -52,7 +62,7 @@ export default function DashBoardData({userId,totalamountreceived,numberofrecept
         topupvalue.current = value;
     }
     async function setBalance(){
-        const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId})});
+        const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId:currentuser.id})});
         const data = await response.json();
         if(data.status === "success" && data.toppedup){
             setTotalBalance(data.balance);
@@ -63,7 +73,7 @@ export default function DashBoardData({userId,totalamountreceived,numberofrecept
             <div className="w-full flex h-full bg-blue-100/20">
                 <Sidebar showTopupInput={showTopupInput} />
                 <div className="grow">
-                    <div className="w-[95%] mx-auto grid gap-x-4 grid-rows-5 md:grid-rows-2 md:grid-cols-2 gap-y-4 lg:grid-cols-3 mt-8">
+                    <div className="w-[95%] mx-auto grid gap-x-4 grid-rows-5 md:grid-rows-3 md:grid-cols-2 gap-y-4 lg:grid-rows-2 lg:grid-cols-3 mt-8">
                         <SummaryCard
                             numberofreceptions={numberofreceptions}
                             numberoftransfers={numberoftransfers}                         
@@ -87,7 +97,7 @@ export default function DashBoardData({userId,totalamountreceived,numberofrecept
                             <div className="w-full h-full bg-blue-600">
                                 <div className="w-[95%] mx-auto h-full flex flex-col justify-between">
                                     <div className="flex justify-between items-center py-6">
-                                        <h3 className="text-[14px]">Total balance in your account</h3>
+                                        <h3 className="text-[14px]">Total balance</h3>
                                         <h3>{totalbalance}Ghs</h3>
                                     </div>
                                     <div className="flex gap-x-3 mb-2">
@@ -98,8 +108,8 @@ export default function DashBoardData({userId,totalamountreceived,numberofrecept
                             </div>
                         </CardWrapper>
                         
-                        <MoneyCard label="Total Amount of money sent" amount={totalamountsent} />
-                        <MoneyCard label="Total Amount of money Received" amount={totalamountreceived} />
+                        <MoneyCard label="Total money sent" amount={totalamountsent} />
+                        <MoneyCard label="Total money Received" amount={totalamountreceived} />
                         <div ref={topupinputoverlay} onClick={closeTopupInput} className={`${visible? 'flex':'hidden'} absolute top-0 left-0 h-full w-full justify-center bg-slate-500/80`}>
                             <div className="max-w-[90%] h-fit w-[30rem] mt-20">
                                 <TextInput onChange={getTopupAmount}  className="w-full text-white text-[18px]" isSignup={false} label="" placeholder="Enter amount to top up with" type="number"/>

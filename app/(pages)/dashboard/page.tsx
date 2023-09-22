@@ -49,12 +49,11 @@ const DashBoard = ()=>{
         }
     });
     const currentuser = data?.user as CurrentUser;
-
+    console.log("main page")
     useEffect(()=>{
         async function fetchTransfers()
         {
-            let response = await fetch("/api/userdata",
-            );
+            let response = await fetch("/api/userdata",{method:"POST",body:JSON.stringify({userid:currentuser.id})});
             let {totalamountreceived_,totalamountsent_,balance,transfers,receptions} = await response.json();
             console.log("data: ",totalamountreceived_,totalamountsent_,balance,transfers,receptions);
             let recentreceptionsdata = receptions as ReceptionData[];
@@ -78,7 +77,6 @@ const DashBoard = ()=>{
              balance={balance}
              numberofreceptions={receptiondata.length}
              numberoftransfers={transferdata.length}
-             userId={currentuser.id}
             />
         </>
     )

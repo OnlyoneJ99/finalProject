@@ -24,7 +24,7 @@ const handler = NextAuth({
                     return null;
                 }
                 const user = await prisma.user.findUnique({
-                   where:{username:credentials.username}
+                   where:{username:credentials.username.toLocaleLowerCase()}
                 });
                 if(!user || !(await compare(credentials.password,user.password))){
                     return  null;

@@ -105,12 +105,12 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                             <div className="w-full h-full bg-blue-600">
                                 <div className="w-[95%] mx-auto h-full flex flex-col justify-between">
                                     <div className="flex justify-between items-center py-6">
-                                        <h3 className="text-[14px]">Total balance</h3>
-                                        <h3>{balance}{(country.toLowerCase()) === "ghana"?"GHS":"USD"}</h3>
+                                        <h3 className="text-[14px] text-white">Total balance</h3>
+                                        <h3 className="text-white">{balance}{(country.toLowerCase()) === "ghana"?"GHS":"USD"}</h3>
                                     </div>
                                     <div className="flex gap-x-3 mb-2">
-                                        <CiCreditCard2 className="border rounded-sm border-white " size={40} />
-                                        <span className="border rounded-sm border-white text-[20px] px-3 flex justify-center items-center">+</span>
+                                        <CiCreditCard2 className="border rounded-sm border-white" color="white" size={40} />
+                                        <span className="border rounded-sm border-white text-[20px] px-3 text-white flex justify-center items-center">+</span>
                                     </div>
                                 </div>
                             </div>

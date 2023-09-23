@@ -26,7 +26,7 @@ export async function registerUser(formdata:FormData){
     const hashedpassword = await hash(password as string,saltround);
     await prisma.user.create({
         data:{
-            username,
+            username:username.toLowerCase(),
             password:hashedpassword,
             phonenumber: phonenumber.replaceAll(" ","").replace("+",""),
             firstname,

@@ -102,7 +102,7 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                             </div>
                         </CardWrapper>
                         <CardWrapper className="px-0">
-                            <div className="w-full h-full bg-blue-600">
+                            <div className="w-full h-full bg-blue-500/90 r">
                                 <div className="w-[95%] mx-auto h-full flex flex-col justify-between">
                                     <div className="flex justify-between items-center py-6">
                                         <h3 className="text-[14px] text-white">Total balance</h3>

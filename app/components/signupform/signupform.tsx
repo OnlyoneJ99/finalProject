@@ -1,18 +1,19 @@
 "use client"
 import TextInput from "../../components/textinput/textinput";
-import {FcGoogle,} from "react-icons/fc";
-import {FaFacebookSquare} from "react-icons/fa";
+import { RotatingLines } from "react-loader-spinner";
 import Button from "../../components/button/button";
 import Form from "@/app/components/form/form";
 import {registerUser} from "@/app/actions/register";
 import FormHeader from "../formheader/formheader";
 import TelephoneInput from "../telephoneInput/telephoneinput";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
+import { useState } from "react";
 
 const passwordpattern = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$/";
 export default function SignupForm(){
 
+    const [loading,setLoading] = useState(false);
     function checkFormFields(data:FormData){
         const username = data.get("username") as string;
         const password = data.get("password") as string;
@@ -25,11 +26,19 @@ export default function SignupForm(){
 
     async function submitForm(data:FormData){
         if(checkFormFields(data)){   
-            let response = await registerUser(data);
-            if(response.registered){
-                toast.success(response?.message as string);
-            }else{
-                toast.error(response?.message as string);
+            setLoading(true);
+            try{
+                let response = await registerUser(data);
+                if(response.registered){
+                    toast.success(response?.message as string);
+                }else{
+                    toast.error(response?.message as string);
+                }
+            }catch(error){
+                console.log(error);
+            }
+            finally{
+                setLoading(false)
             }
             return;
         }
@@ -57,7 +66,21 @@ export default function SignupForm(){
                 </div>
                 <TextInput required={true} isSignup={true} label="first name" type="text" />
                 <TextInput required={true} isSignup={true} label="last name" type="text"/>
-                <Button type="submit" className="bg-blue-600/80 w-full text-white p-2 rounded-[4px]" >Sign Up</Button>
+                <Button type="submit" disabled={loading} className={`bg-blue-600/80 w-full text-white p-2 rounded-[4px] flex justify-center items-center ${loading && `cursor-not-allowed`}`} >
+                {
+                    loading ? 
+                        <>
+                            <RotatingLines strokeColor="white" 
+                                strokeWidth="4"
+                                animationDuration="0.8"
+                                width="25"
+                                visible={true}
+                            /> 
+                            <span className="ml-2">Registering...</span>
+                        </>:
+                        "Register"
+                }
+                </Button>
             </Form>
         </>
     )

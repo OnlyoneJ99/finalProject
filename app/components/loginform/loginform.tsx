@@ -1,7 +1,5 @@
 "use client"
 import TextInput from "../../components/textinput/textinput";
-import {FcGoogle,} from "react-icons/fc";
-import {FaFacebookSquare} from "react-icons/fa";
 import Button from "../../components/button/button";
 import {signIn } from "next-auth/react";
 import {useRouter } from "next/navigation";

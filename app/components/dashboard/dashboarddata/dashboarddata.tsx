@@ -9,6 +9,7 @@ import MoneyCard from "../moneycard/moneycard";
 import TextInput from "../../textinput/textinput";
 import React, { useRef, useState } from "react";
 import Button from "../../button/button";
+import { RotatingLines } from "react-loader-spinner";
 import { useSession } from "next-auth/react";
 
 interface GeneralData{
@@ -46,9 +47,9 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
     const [visible,setVisible] = useState(false);
     const topupvalue = useRef(0);
     const topupinputoverlay = useRef(null);
+    const [loading,setLoading] = useState(false);    
     const {data} = useSession();
     const currentuser = data?.user as CurrentUser;
-    console.log(balance);
 
     function showTopupInput(){
         setVisible(true);
@@ -62,11 +63,18 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
         topupvalue.current = value;
     }
     async function topUpBalance(){
-        const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId:currentuser.id})});
-        const data = await response.json();
-        if(data.status === "success" && data.toppedup){
-            setBalance(data.balance);
-        }   
+        try{
+            setLoading(true);
+            const response = await fetch("/api/topup",{method:"POST",body:JSON.stringify({amount:topupvalue.current,userId:currentuser.id})});
+            const data = await response.json();
+            if(data.status === "success" && data.toppedup){
+                setBalance(data.balance);
+            }   
+        }catch(error){
+            console.log(error);
+        }finally{
+            setLoading(false);
+        }
     }
     return(
         <div className="h-full relative">
@@ -106,14 +114,27 @@ export default function DashBoardData({totalamountreceived,numberofreceptions,nu
                                     </div>
                                 </div>
                             </div>
-                        </CardWrapper>
-                        
+                        </CardWrapper>                        
                         <MoneyCard country={country} label="Total money sent" amount={totalamountsent} />
                         <MoneyCard country={country} label="Total money Received" amount={totalamountreceived} />
                         <div ref={topupinputoverlay} onClick={closeTopupInput} className={`${visible? 'flex':'hidden'} absolute top-0 left-0 h-full w-full justify-center bg-slate-500/80`}>
                             <div className="max-w-[90%] h-fit w-[30rem] mt-20">
                                 <TextInput onChange={getTopupAmount}  className="w-full text-white text-[18px]" isSignup={false} label="" placeholder="Enter amount to top up with" type="number"/>
-                                <Button onClick={(e)=>{setVisible(false) ,topUpBalance()}} className="bg-blue-500 mt-4 w-full text-center">top up</Button>
+                                <Button disabled={loading} onClick={(e)=>{setVisible(false) ,topUpBalance()}} className={`bg-blue-500 mt-4 w-full text-center flex justify-center items-center ${loading && `cursor-not-allowed`}`}>
+                                    {
+                                        loading ? 
+                                            <>
+                                                <RotatingLines strokeColor="white" 
+                                                    strokeWidth="4"
+                                                    animationDuration="0.8"
+                                                    width="25"
+                                                    visible={true}
+                                                /> 
+                                                <span className="ml-2">Refilling account...</span>
+                                            </>:
+                                            "Top up"
+                                    } 
+                                </Button>
                             </div>
                         </div>
                     </div>

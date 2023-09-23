@@ -33,7 +33,7 @@ export default function NavBar(){
         );
       return(
         <>
-          <div className="sm:hidden">
+          <div className="sm:hidden z-50">
             <Button id="menu-btn" onClick={showMenu} aria-expanded={`${visible?`true`:`false`}`} aria-controls="menu" aria-haspopup="menu" className=" bg-blue-600/70 rounded-[4px] px-1 flex items-center justify-center py-1">
               {visible ? <RxCross1 size={25} color="white"/> :<RxHamburgerMenu size={25} color="white"/>}
             </Button>

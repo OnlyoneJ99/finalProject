@@ -16,7 +16,6 @@ interface ITextInput extends React.HTMLAttributes<HTMLInputElement>{
 
 const TextInput:FC<ITextInput> = ({required=false,passwordpattern,errorMessage,type,label,isSignup,className,placeholder,onChange})=>{
     const id = useId();
-    console.log(passwordpattern)
     return(
         <div className={twMerge("flex flex-col w-full",className)}>
             <label className={`text-gray-600 text-[14px] ${isSignup?`after:content-['*'] after:text-red-600 after:ml-[2px]`:``} `} htmlFor={id}>{label}</label>

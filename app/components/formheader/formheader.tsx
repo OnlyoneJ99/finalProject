@@ -1,5 +1,4 @@
 
-
 export default function FormHeader({title}:{title:string}){
     return(
         <div className="text-slate-600 text-center mb-3 grow flex flex-col justify-center">

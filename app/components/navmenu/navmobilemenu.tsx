@@ -12,7 +12,7 @@ export default function NavMobileMenu({visible}:{visible:boolean}){
             scale-0 opacity-0 ${visible && `scale-100 opacity-100`}`}
         >
             
-            <Link href="/signup" className=" 
+            <Link href="/login" className=" 
                 px-5 py-2 w-1/2 bg-blue-600/80 border-2 text-white
                 rounded-[4px] text-[14px] hover:text-slate-600
                 hover:outline-blue-500 hover:outline-2 hover:outline
@@ -20,7 +20,7 @@ export default function NavMobileMenu({visible}:{visible:boolean}){
                 role="menuitem">
                 Login
             </Link>
-            <Link href="/login" className="
+            <Link href="/signup" className="
                 px-5 py-2 border text-center
                 rounded-[4px] border-gray-400/80
                 text-[14px] hover:bg-blue-500/40 hover:-outline-offset-2
